@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#1c6e4a">
+<title>NISAシミュレーター</title>
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="stylesheet" href="style.css?v=19">
+</head>
+<body>
+<header class="app-header">
+  <img class="app-icon" src="icon-192.png" alt="">
+  <h1>NISA資産シミュレーター</h1>
+  <p class="sub">積み立て投資でいくらになるか、かんたん計算</p>
+  <p class="badge">※ 簡易シミュレーターです。実際の運用を保証するものではありません</p>
+</header>
+
+<main>
+  <section class="input-card">
+    <div class="field">
+      <label for="age">現在の年齢</label>
+      <div class="field-row">
+        <input type="text" id="age" inputmode="numeric" min="0" max="100" value="35">
+        <span class="unit">歳</span>
+      </div>
+    </div>
+
+    <div class="field">
+      <label for="assets">今すでにNISAに入れている金額</label>
+      <div class="field-row">
+        <input type="text" id="assets" inputmode="numeric" min="0" step="1" value="100">
+        <span class="unit">万円</span>
+      </div>
+      <p class="field-hint">「現在の年齢」時点で、これまでの積み立てで口座に入っている金額です。</p>
+    </div>
+
+    <div class="field">
+      <label for="rate">想定利回り(年率)</label>
+      <div class="field-row">
+        <input type="text" id="rate" inputmode="decimal" min="0" max="30" step="0.1" value="8">
+        <span class="unit">%</span>
+      </div>
+      <p class="field-hint">全世界株式インデックスの過去の平均リターンは、年8%前後と言われています。</p>
+    </div>
+
+    <div class="field">
+      <label for="endAge">シミュレーション終了年齢</label>
+      <div class="field-row">
+        <input type="text" id="endAge" inputmode="numeric" min="1" max="120" value="65">
+        <span class="unit">歳</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="input-card">
+    <div class="field">
+      <label for="bulkYearly">毎年の投資額をまとめて設定</label>
+      <div class="field-row">
+        <input type="text" id="bulkYearly" inputmode="numeric" min="0" step="1" value="40">
+        <span class="unit">万円/年</span>
+      </div>
+      <button id="applyBulk" class="apply-btn" type="button">全年に反映</button>
+      <p class="field-hint">下の表の投資額は1年ずつ書き換えられます。「〇歳から投資額を減らす」なども表で直接調整できます。</p>
+    </div>
+  </section>
+
+  <section class="result-summary" id="summary">
+    <div class="summary-box">
+      <div class="summary-label" id="summaryLabel">65歳時点の資産額</div>
+      <div class="summary-value" id="summaryValue">-</div>
+      <div class="summary-detail" id="summaryDetail"></div>
+    </div>
+    <p id="nisaWarning" class="nisa-warning hidden"></p>
+    <p class="nisa-limit-note">NISA投資枠: 年間360万円まで / 生涯1800万円まで</p>
+  </section>
+
+  <section class="chart-card">
+    <canvas id="chart" role="img" aria-label="資産推移グラフ"></canvas>
+  </section>
+
+  <section class="table-card">
+    <h2 class="table-title">年ごとの投資額と資産額</h2>
+    <div class="table-wrap">
+      <table id="table">
+        <thead>
+          <tr><th>年齢</th><th>年間投資額</th><th>資産額(年末)</th><th>うち運用益</th></tr>
+        </thead>
+        <tbody id="tableBody"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="input-card">
+    <h2 class="table-title">リタイア後、取り崩しながら使うシミュレーション</h2>
+    <p id="withdrawStartHint" class="field-hint start-hint"></p>
+    <div class="field">
+      <label for="withdrawRate">取り崩し率(年率)</label>
+      <div class="field-row">
+        <input type="text" id="withdrawRate" inputmode="decimal" min="0" max="20" step="0.1" value="4">
+        <span class="unit">%</span>
+      </div>
+      <p class="field-hint">毎年、その時点の残高に対してこの割合(%)を計算し直して取り崩します。残高が増えれば取り崩せる額も増え、減れば取り崩し額も減ります。運用は引き続き想定利回りで続くものとして計算します。</p>
+      <p class="field-hint">「4%」という数字は、アメリカの研究(トリニティスタディ)がもとになった「4%ルール」という考え方から来ています。資産の4%程度を毎年取り崩せば、多くの場合30年以上資産が尽きずに使い続けられる、という目安の数字です。将来も必ず成り立つ保証ではありません。</p>
+    </div>
+    <div class="field">
+      <label for="withdrawEndAge">取り崩しシミュレーション終了年齢</label>
+      <div class="field-row">
+        <input type="text" id="withdrawEndAge" inputmode="numeric" min="1" max="120" value="95">
+        <span class="unit">歳</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="result-summary">
+    <div class="summary-box withdraw-box">
+      <div class="summary-label" id="withdrawSummaryLabel">取り崩しシミュレーション</div>
+      <div class="summary-value" id="withdrawSummaryValue">-</div>
+      <div class="summary-detail" id="withdrawSummaryDetail"></div>
+    </div>
+  </section>
+
+  <section class="table-card">
+    <h2 class="table-title">取り崩し期間の内訳</h2>
+    <div class="table-wrap">
+      <table id="withdrawTable">
+        <thead>
+          <tr><th>年齢</th><th>年間取崩し額</th><th>月あたり</th><th>年末残高</th></tr>
+        </thead>
+        <tbody id="withdrawTableBody"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <p class="disclaimer">
+    ※ このアプリは、入力した利回りで、年ごとに指定した投資額を積み立てたと仮定した「単純な複利計算」だけを行う簡易シミュレーターです。各年の投資額は「その年の年末に一括投資した」ものとして計算しています(毎月コツコツ積み立てる場合は、実際にはこの計算より少しだけ多く増えます)。NISAの年間投資枠(360万円)・生涯投資枠(1800万円)の超過チェックは行いますが、それ以外の税金・手数料、市場の値動きやインフレなどは考慮していません。実際の運用成果を保証するものではないので、あくまで目安としてご利用ください。
+  </p>
+</main>
+
+<script src="script.js?v=19"></script>
+</body>
+</html>
