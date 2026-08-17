@@ -1,8 +1,8 @@
-const CACHE_NAME = 'nisa-sim-v21';
+const CACHE_NAME = 'nisa-sim-v22';
 const ASSETS = [
   './index.html',
-  './style.css?v=21',
-  './script.js?v=21',
+  './style.css?v=22',
+  './script.js?v=22',
   './manifest.json',
   './icon-180.png',
   './icon-192.png',
@@ -25,8 +25,17 @@ self.addEventListener('activate', (event) => {
   self.clients.claim();
 });
 
+// ネットにつながっている時は常に最新版を取りに行き、キャッシュも更新しておく。
+// オフラインの時だけ、保存しておいたキャッシュを使う。
+// (以前は「キャッシュ優先」だったため、更新しても古い画面のまま固定されることがあった)
 self.addEventListener('fetch', (event) => {
   event.respondWith(
-    caches.match(event.request).then((cached) => cached || fetch(event.request))
+    fetch(event.request)
+      .then((response) => {
+        const clone = response.clone();
+        caches.open(CACHE_NAME).then((cache) => cache.put(event.request, clone));
+        return response;
+      })
+      .catch(() => caches.match(event.request))
   );
 });
