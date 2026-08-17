@@ -229,6 +229,22 @@ tr.over-limit-row td { background: #fbeceb; }
   background: #fbeceb;
 }
 
+.reset-section {
+  text-align: center;
+  margin-bottom: 16px;
+}
+.reset-btn {
+  border: 1px solid var(--border);
+  background: var(--card-bg);
+  color: var(--danger);
+  font-size: 0.85rem;
+  font-weight: 600;
+  padding: 10px 18px;
+  border-radius: 10px;
+  cursor: pointer;
+}
+.reset-btn:active { background: #fbeceb; }
+
 .disclaimer {
   font-size: 0.75rem;
   color: var(--text-sub);

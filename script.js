@@ -427,6 +427,21 @@
     renderChart(result, simulateWithdrawal(result));
   });
 
+  // リセットボタン: すべての入力欄を初期値に戻し、保存内容も消す
+  const DEFAULTS = { age: '35', assets: '100', rate: '8', endAge: '65' };
+  const WITHDRAW_DEFAULTS = { withdrawRate: '4', withdrawEndAge: '95' };
+  $('resetAll').addEventListener('click', () => {
+    const ok = window.confirm('入力した内容をすべて消して、初期状態に戻します。よろしいですか?');
+    if (!ok) return;
+
+    Object.keys(inputs).forEach((key) => { inputs[key].value = DEFAULTS[key]; });
+    Object.keys(withdrawInputs).forEach((key) => { withdrawInputs[key].value = WITHDRAW_DEFAULTS[key]; });
+    bulkYearly.value = '40';
+    contributions = {};
+    localStorage.removeItem(STORAGE_KEY);
+    update(true);
+  });
+
   defaultLoad();
   update(true);
 
