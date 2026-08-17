@@ -427,19 +427,41 @@
     renderChart(result, simulateWithdrawal(result));
   });
 
-  // リセットボタン: すべての入力欄を初期値に戻し、保存内容も消す
+  // リセットボタン(C): すべての入力欄を初期値に一発で戻す
+  // ※ スマホのホーム画面から開くPWAでは window.confirm() が正しく動かないことがあるため、
+  //   確認ダイアログは出さずに即リセットする(電卓のCボタンと同じ考え方)。
   const DEFAULTS = { age: '35', assets: '100', rate: '8', endAge: '65' };
   const WITHDRAW_DEFAULTS = { withdrawRate: '4', withdrawEndAge: '95' };
   $('resetAll').addEventListener('click', () => {
-    const ok = window.confirm('入力した内容をすべて消して、初期状態に戻します。よろしいですか?');
-    if (!ok) return;
-
     Object.keys(inputs).forEach((key) => { inputs[key].value = DEFAULTS[key]; });
     Object.keys(withdrawInputs).forEach((key) => { withdrawInputs[key].value = WITHDRAW_DEFAULTS[key]; });
     bulkYearly.value = '40';
     contributions = {};
     localStorage.removeItem(STORAGE_KEY);
     update(true);
+  });
+
+  // ダーク/ライト切り替え
+  const THEME_KEY = 'nisa-sim-theme';
+  const themeToggle = $('themeToggle');
+  function systemPrefersDark() {
+    return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+  }
+  function applyTheme(theme) {
+    // theme: 'light' | 'dark' | null(システムのおまかせ)
+    if (theme) document.documentElement.setAttribute('data-theme', theme);
+    else document.documentElement.removeAttribute('data-theme');
+    const isDark = theme ? theme === 'dark' : systemPrefersDark();
+    themeToggle.textContent = isDark ? '☾' : '☀';
+  }
+  const savedTheme = localStorage.getItem(THEME_KEY);
+  applyTheme(savedTheme);
+  themeToggle.addEventListener('click', () => {
+    const current = localStorage.getItem(THEME_KEY);
+    const isDarkNow = current ? current === 'dark' : systemPrefersDark();
+    const next = isDarkNow ? 'light' : 'dark';
+    localStorage.setItem(THEME_KEY, next);
+    applyTheme(next);
   });
 
   defaultLoad();

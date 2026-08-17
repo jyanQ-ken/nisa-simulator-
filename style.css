@@ -9,8 +9,32 @@
   --text-sub: #66756c;
   --border: #e1e6e2;
   --danger: #b04a3c;
+  --danger-soft: #fbeceb;
   --amber: #b5772e;
   --amber-dark: #7a4f1c;
+}
+
+/* システムがダーク設定の場合(このページ上で明示的に「ライト」を選んでいなければ適用) */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --green-light: #16332570;
+    --bg: #14181a;
+    --card-bg: #1d2326;
+    --text: #e7ece9;
+    --text-sub: #96a29b;
+    --border: #333c40;
+    --danger-soft: #3a2321;
+  }
+}
+/* このページ上で「ダーク」を明示的に選んだ場合 */
+:root[data-theme="dark"] {
+  --green-light: #16332570;
+  --bg: #14181a;
+  --card-bg: #1d2326;
+  --text: #e7ece9;
+  --text-sub: #96a29b;
+  --border: #333c40;
+  --danger-soft: #3a2321;
 }
 
 * { box-sizing: border-box; }
@@ -37,6 +61,7 @@ body {
 }
 
 .app-header {
+  position: relative;
   background: linear-gradient(160deg, var(--green) 0%, var(--green-dark) 100%);
   color: #fff;
   padding: 32px 20px 24px;
@@ -44,6 +69,28 @@ body {
   border-radius: 0 0 24px 24px;
   box-shadow: 0 8px 24px rgba(15, 74, 48, 0.25);
 }
+.header-tools {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  display: flex;
+  gap: 8px;
+}
+.tool-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff;
+  font-size: 0.95rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+.tool-btn:active { background: rgba(255, 255, 255, 0.28); }
 .app-icon {
   width: 52px;
   height: 52px;
@@ -206,12 +253,12 @@ td.contribution-cell { padding: 4px 6px; white-space: nowrap; }
   margin-left: 3px;
 }
 tr.current-age-row td { background: var(--green-light); font-weight: 600; }
-tr.over-limit-row td { background: #fbeceb; }
+tr.over-limit-row td { background: var(--danger-soft); }
 
 .nisa-warning {
   margin: 10px 4px 0;
   padding: 10px 12px;
-  background: #fbeceb;
+  background: var(--danger-soft);
   color: var(--danger);
   border-radius: 10px;
   font-size: 0.82rem;
@@ -226,24 +273,8 @@ tr.over-limit-row td { background: #fbeceb; }
 }
 .over-limit-input {
   border-color: var(--danger) !important;
-  background: #fbeceb;
+  background: var(--danger-soft);
 }
-
-.reset-section {
-  text-align: center;
-  margin-bottom: 16px;
-}
-.reset-btn {
-  border: 1px solid var(--border);
-  background: var(--card-bg);
-  color: var(--danger);
-  font-size: 0.85rem;
-  font-weight: 600;
-  padding: 10px 18px;
-  border-radius: 10px;
-  cursor: pointer;
-}
-.reset-btn:active { background: #fbeceb; }
 
 .disclaimer {
   font-size: 0.75rem;

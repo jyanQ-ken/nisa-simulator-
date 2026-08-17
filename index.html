@@ -8,10 +8,14 @@
 <link rel="manifest" href="manifest.json">
 <link rel="icon" href="icon-192.png">
 <link rel="apple-touch-icon" href="icon-180.png">
-<link rel="stylesheet" href="style.css?v=20">
+<link rel="stylesheet" href="style.css?v=21">
 </head>
 <body>
 <header class="app-header">
+  <div class="header-tools">
+    <button id="themeToggle" class="tool-btn" type="button" title="ダーク/ライト切り替え" aria-label="ダーク/ライト切り替え">☀</button>
+    <button id="resetAll" class="tool-btn" type="button" title="入力内容をリセット" aria-label="入力内容をリセット">C</button>
+  </div>
   <img class="app-icon" src="icon-192.png" alt="">
   <h1>NISA資産シミュレーター</h1>
   <p class="sub">積み立て投資でいくらになるか、かんたん計算</p>
@@ -134,15 +138,11 @@
     </div>
   </section>
 
-  <section class="reset-section">
-    <button id="resetAll" class="reset-btn" type="button">入力内容をすべてリセット</button>
-  </section>
-
   <p class="disclaimer">
     ※ このアプリは、入力した利回りで、年ごとに指定した投資額を積み立てたと仮定した「単純な複利計算」だけを行う簡易シミュレーターです。各年の投資額は「その年の年末に一括投資した」ものとして計算しています(毎月コツコツ積み立てる場合は、実際にはこの計算より少しだけ多く増えます)。NISAの年間投資枠(360万円)・生涯投資枠(1800万円)の超過チェックは行いますが、それ以外の税金・手数料、市場の値動きやインフレなどは考慮していません。実際の運用成果を保証するものではないので、あくまで目安としてご利用ください。
   </p>
 </main>
 
-<script src="script.js?v=20"></script>
+<script src="script.js?v=21"></script>
 </body>
 </html>
