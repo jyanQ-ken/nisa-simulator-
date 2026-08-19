@@ -15,7 +15,7 @@
 <link rel="manifest" href="manifest.json">
 <link rel="icon" href="icon-192.png">
 <link rel="apple-touch-icon" href="icon-180.png">
-<link rel="stylesheet" href="style.css?v=28">
+<link rel="stylesheet" href="style.css?v=29">
 </head>
 <body>
 <header class="app-header">
@@ -34,7 +34,7 @@
     <div class="field">
       <label for="age">現在の年齢</label>
       <div class="field-row">
-        <input type="text" id="age" inputmode="numeric" min="0" max="100" value="0">
+        <input type="text" id="age" inputmode="numeric" min="0" max="100" value="30">
         <span class="unit">歳</span>
       </div>
     </div>
@@ -51,10 +51,10 @@
     <div class="field">
       <label for="rate">想定利回り(年率)</label>
       <div class="field-row">
-        <input type="text" id="rate" inputmode="decimal" min="0" max="30" step="0.1" value="8">
+        <input type="text" id="rate" inputmode="decimal" min="0" max="30" step="0.1" value="6">
         <span class="unit">%</span>
       </div>
-      <p class="field-hint">全世界株式インデックスの過去の平均リターンは、年8%前後と言われています。</p>
+      <p class="field-hint">全世界株式インデックスの過去の平均リターンは年8%前後と言われていますが、税金や手数料、将来の不確実性も見込んで、少し控えめな数字にしています。</p>
     </div>
 
     <div class="field">
@@ -159,6 +159,6 @@
   </p>
 </main>
 
-<script src="script.js?v=28"></script>
+<script src="script.js?v=29"></script>
 </body>
 </html>

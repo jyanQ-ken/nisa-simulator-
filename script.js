@@ -461,7 +461,7 @@
   });
 
   // リセットボタン(C): すべての入力欄を初期値に一発で戻す(確認ダイアログなし。電卓のCボタンと同じ考え方)
-  const DEFAULTS = { age: '0', assets: '100', rate: '8', endAge: '65' };
+  const DEFAULTS = { age: '30', assets: '100', rate: '6', endAge: '65' };
   const WITHDRAW_DEFAULTS = { withdrawRate: '4', withdrawGrowthRate: '5', withdrawEndAge: '95' };
   $('resetAll').addEventListener('click', () => {
     Object.keys(inputs).forEach((key) => { inputs[key].value = DEFAULTS[key]; });
