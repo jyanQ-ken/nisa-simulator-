@@ -18,8 +18,23 @@
   const applyBulk = $('applyBulk');
   const withdrawInputs = {
     withdrawRate: $('withdrawRate'),
+    withdrawGrowthRate: $('withdrawGrowthRate'),
     withdrawEndAge: $('withdrawEndAge'),
   };
+
+  // 入力欄からフォーカスが外れた時に、値を妥当な範囲に丸める
+  // (999歳のような極端な値をそのまま計算に使わないようにするための保険)
+  function clampOnBlur(el, min, max, isInt) {
+    el.addEventListener('blur', () => {
+      if (el.value === '') return;
+      let v = Number(el.value);
+      if (Number.isNaN(v)) { el.value = min; return; }
+      if (isInt) v = Math.round(v);
+      v = Math.min(max, Math.max(min, v));
+      el.value = v;
+      update(true);
+    });
+  }
 
   const STORAGE_KEY = 'nisa-sim-inputs-v3';
 
@@ -121,7 +136,7 @@
   // その年の年始残高に対して毎年◯%を計算し直すので、残高が増えれば取り崩し額も増え、
   // 減れば取り崩し額も減る(定率取り崩し方式)。
   function simulateWithdrawal(accResult) {
-    const rate = (Number(inputs.rate.value) || 0) / 100;
+    const rate = (Number(withdrawInputs.withdrawGrowthRate.value) || 0) / 100;
     const withdrawRate = Math.max(0, Number(withdrawInputs.withdrawRate.value) || 0) / 100;
     let withdrawEndAge = Math.floor(Number(withdrawInputs.withdrawEndAge.value) || accResult.endAge);
     if (withdrawEndAge < accResult.endAge) withdrawEndAge = accResult.endAge;
@@ -179,10 +194,19 @@
     $('withdrawSummaryValue').textContent = manYen(w.annualWithdrawal) + ' /年';
     const monthly = w.annualWithdrawal / 12;
     let detail = `月あたり: ${manYen(monthly)}\n取り崩し開始時の資産額: ${manYen(w.base)}\n(残高に応じて、取り崩し額は毎年変わります)`;
+
     if (w.depletedAge !== null) {
-      detail += `\n⚠ ${w.depletedAge}歳ごろに資産が尽きる見込みです`;
+      // 定率取り崩し(残高に対して%計算)では理論上ゼロにはならないが、
+      // 極端な入力値などで実際に0になった場合のみ表示する
+      detail += `\n⚠ ${w.depletedAge}歳で資産がゼロになりました`;
     } else if (w.rows.length) {
-      detail += `\n${w.withdrawEndAge}歳時点の残高: ${manYen(w.rows[w.rows.length - 1].endBalance)}`;
+      const lastBalance = w.rows[w.rows.length - 1].endBalance;
+      detail += `\n${w.withdrawEndAge}歳時点の残高: ${manYen(lastBalance)}`;
+      if (lastBalance < w.base) {
+        detail += `\n⚠ 取り崩し率が想定利回りを上回っているため、資産は少しずつ目減りしていく計算です`;
+      } else {
+        detail += `\n(取り崩しながらも、資産は増え続ける計算です)`;
+      }
     }
     $('withdrawSummaryDetail').textContent = detail;
   }
@@ -415,6 +439,15 @@
   });
   selectAllOnFocus(bulkYearly);
 
+  clampOnBlur(inputs.age, 0, 110, true);
+  clampOnBlur(inputs.assets, 0, 999999, false);
+  clampOnBlur(inputs.rate, 0, 30, false);
+  clampOnBlur(inputs.endAge, 0, 120, true);
+  clampOnBlur(bulkYearly, 0, 999999, false);
+  clampOnBlur(withdrawInputs.withdrawRate, 0, 20, false);
+  clampOnBlur(withdrawInputs.withdrawGrowthRate, 0, 30, false);
+  clampOnBlur(withdrawInputs.withdrawEndAge, 0, 120, true);
+
   applyBulk.addEventListener('click', () => {
     const { age, endAge } = getAgeRange();
     const val = Math.max(0, Number(bulkYearly.value) || 0) * 10000;
@@ -425,6 +458,18 @@
   window.addEventListener('resize', () => {
     const result = simulate();
     renderChart(result, simulateWithdrawal(result));
+  });
+
+  // リセットボタン(C): すべての入力欄を初期値に一発で戻す(確認ダイアログなし。電卓のCボタンと同じ考え方)
+  const DEFAULTS = { age: '35', assets: '100', rate: '8', endAge: '65' };
+  const WITHDRAW_DEFAULTS = { withdrawRate: '4', withdrawGrowthRate: '5', withdrawEndAge: '95' };
+  $('resetAll').addEventListener('click', () => {
+    Object.keys(inputs).forEach((key) => { inputs[key].value = DEFAULTS[key]; });
+    Object.keys(withdrawInputs).forEach((key) => { withdrawInputs[key].value = WITHDRAW_DEFAULTS[key]; });
+    bulkYearly.value = '40';
+    contributions = {};
+    localStorage.removeItem(STORAGE_KEY);
+    update(true);
   });
 
   // ダーク/ライト切り替え

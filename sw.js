@@ -1,12 +1,13 @@
-const CACHE_NAME = 'nisa-sim-v24';
+const CACHE_NAME = 'nisa-sim-v25';
 const ASSETS = [
   './index.html',
-  './style.css?v=24',
-  './script.js?v=24',
+  './style.css?v=25',
+  './script.js?v=25',
   './manifest.json',
   './icon-180.png',
   './icon-192.png',
   './icon-512.png',
+  './og-image.png',
 ];
 
 self.addEventListener('install', (event) => {

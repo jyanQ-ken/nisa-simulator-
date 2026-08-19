@@ -5,15 +5,23 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="theme-color" content="#1c6e4a">
 <title>NISAシミュレーター</title>
+<meta name="description" content="現在の年齢・資産額・利回りを入れるだけで、何歳でいくらになるかをかんたんに試算できるNISA資産シミュレーター">
+<meta property="og:title" content="NISA資産シミュレーター">
+<meta property="og:description" content="積み立て投資でいくらになるか、かんたん計算。リタイア後の取り崩しシミュレーションつき。">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://jyanq-ken.github.io/nisa-simulator-/">
+<meta property="og:image" content="https://jyanq-ken.github.io/nisa-simulator-/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
 <link rel="manifest" href="manifest.json">
 <link rel="icon" href="icon-192.png">
 <link rel="apple-touch-icon" href="icon-180.png">
-<link rel="stylesheet" href="style.css?v=24">
+<link rel="stylesheet" href="style.css?v=25">
 </head>
 <body>
 <header class="app-header">
   <div class="header-tools">
     <button id="themeToggle" class="tool-btn" type="button" title="ダーク/ライト切り替え" aria-label="ダーク/ライト切り替え">☀</button>
+    <button id="resetAll" class="tool-btn" type="button" title="入力内容をリセット" aria-label="入力内容をリセット">C</button>
   </div>
   <img class="app-icon" src="icon-192.png" alt="">
   <h1>NISA資産シミュレーター</h1>
@@ -105,8 +113,16 @@
         <input type="text" id="withdrawRate" inputmode="decimal" min="0" max="20" step="0.1" value="4">
         <span class="unit">%</span>
       </div>
-      <p class="field-hint">毎年、その時点の残高に対してこの割合(%)を計算し直して取り崩します。残高が増えれば取り崩せる額も増え、減れば取り崩し額も減ります。運用は引き続き想定利回りで続くものとして計算します。</p>
+      <p class="field-hint">毎年、その時点の残高に対してこの割合(%)を計算し直して取り崩します。残高が増えれば取り崩せる額も増え、減れば取り崩し額も減ります。</p>
       <p class="field-hint">「4%」という数字は、アメリカの研究(トリニティスタディ)がもとになった「4%ルール」という考え方から来ています。資産の4%程度を毎年取り崩せば、多くの場合30年以上資産が尽きずに使い続けられる、という目安の数字です。将来も必ず成り立つ保証ではありません。</p>
+    </div>
+    <div class="field">
+      <label for="withdrawGrowthRate">取り崩し期間中の想定利回り(年率)</label>
+      <div class="field-row">
+        <input type="text" id="withdrawGrowthRate" inputmode="decimal" min="0" max="30" step="0.1" value="5">
+        <span class="unit">%</span>
+      </div>
+      <p class="field-hint">リタイア後は株の比率を下げて安定運用に切り替える人が多いので、積み立て期間より低めの数字にするのがおすすめです。</p>
     </div>
     <div class="field">
       <label for="withdrawEndAge">取り崩しシミュレーション終了年齢</label>
@@ -142,6 +158,6 @@
   </p>
 </main>
 
-<script src="script.js?v=24"></script>
+<script src="script.js?v=25"></script>
 </body>
 </html>
