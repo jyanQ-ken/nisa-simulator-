@@ -1,8 +1,8 @@
-const CACHE_NAME = 'nisa-sim-v26';
+const CACHE_NAME = 'nisa-sim-v27';
 const ASSETS = [
   './index.html',
-  './style.css?v=26',
-  './script.js?v=26',
+  './style.css?v=27',
+  './script.js?v=27',
   './manifest.json',
   './icon-180.png',
   './icon-192.png',
